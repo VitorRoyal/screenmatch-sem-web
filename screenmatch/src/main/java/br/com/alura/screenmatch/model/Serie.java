@@ -22,12 +22,10 @@ public class Serie {
     private String atores;
     private String poster;
     private String sinopse;
-    @Transient
-    private List<Episodio> episodio = new ArrayList<>();
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER) //Aqui temos uma Serie para varios eps, o cascade é pra salvar no banco e o fetch é pra trazer as entidades
+    private List<Episodio> episodios = new ArrayList<>();
 
-    public Serie(){
-
-    }
+    public Serie(){}
 
     public Serie(DadosSerie dadosSerie){
         this.titulo = dadosSerie.titulo();
@@ -104,11 +102,12 @@ public class Serie {
     }
 
     public List<Episodio> getEpisodio() {
-        return episodio;
+        return episodios;
     }
 
     public void setEpisodio(List<Episodio> episodio) {
-        this.episodio = episodio;
+        episodio.forEach(e -> e.setSerie(this));
+        this.episodios = episodio;
     }
 
     @Override
@@ -121,6 +120,7 @@ public class Serie {
 
                 ", atores='" + atores + '\'' +
                 ", poster='" + poster + '\'' +
-                ", sinopse='" + sinopse + '\'';
+                ", sinopse='" + sinopse + '\'' +
+                ", episodios='" + episodios + '\'';
     }
 }
